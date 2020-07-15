@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CodeJar.Domain
 {
@@ -8,6 +9,7 @@ namespace CodeJar.Domain
     {
         public int Id {get; set;}
         public string State { get; protected set; }
+        public Guid RedemptionID { get; set; }
     }
 
     public class GeneratedCode : Code

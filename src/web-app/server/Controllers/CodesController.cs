@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CodeJar.Domain;
 using CodeJar.Infrastructure;
+using CodeJar.Infrastructure.Guids;
 using CodeJar.WebApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -21,13 +22,19 @@ namespace CodeJar.WebApp.Controllers
         private readonly IConfiguration _config;
         private readonly ICodeRepository _codeRepository;
         private readonly SqlConnection _connection;
+        private readonly ISequentialGuidGenerator _idGenerator;
 
-        public CodesController(ILogger<CodesController> logger, IConfiguration config, ICodeRepository codeRepository, SqlConnection connection)
+        public CodesController(ILogger<CodesController> logger,
+         IConfiguration config,
+          ICodeRepository codeRepository,
+           SqlConnection connection,
+           ISequentialGuidGenerator idGenerator)
         {
             _logger = logger;
             _config = config;
             _codeRepository = codeRepository;
             _connection = connection;
+            _idGenerator = idGenerator;
         }
 
         [HttpGet]
@@ -84,7 +91,7 @@ namespace CodeJar.WebApp.Controllers
                 var seedValue = CodeConverter.ConvertFromCode(code, alphabet);
                 var codeToDeactivate = await _codeRepository.GetDeactivatingAsync(seedValue);
                 codeToDeactivate.Deactivate("user", now);
-                await _codeRepository.UpdateAsync(codeToDeactivate);
+                await _codeRepository.UpdateAsync(codeToDeactivate, null);
             }
 
             return Ok();
@@ -101,7 +108,7 @@ namespace CodeJar.WebApp.Controllers
             {
                 code.Redeem("user", DateTime.Now);
 
-                await _codeRepository.UpdateAsync(code);
+                await _codeRepository.UpdateAsync(code, _idGenerator.NextId());
 
                 return Ok();
             }

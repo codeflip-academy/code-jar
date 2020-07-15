@@ -8,7 +8,7 @@ namespace CodeJar.Domain
     public interface ICodeRepository
     {
         Task UpdateAsync(List<Code> codes);
-        Task UpdateAsync(Code code);
+        Task UpdateAsync(Code code, Guid? id);
         Task AddAsync(IAsyncEnumerable<GeneratedCode> codes);
         Task<RedeemingCode> GetRedeemingAsync(int value);
         Task<DeactivatingCode> GetDeactivatingAsync(int value);

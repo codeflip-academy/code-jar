@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Threading.Tasks;
 using CodeJar.Domain;
+using CodeJar.Infrastructure.Guids;
 
 namespace CodeJar.Infrastructure
 {
@@ -72,7 +73,7 @@ namespace CodeJar.Infrastructure
             }
         }
         
-        public async Task UpdateAsync(Code code)
+        public async Task UpdateAsync(Code code, Guid? id)
         {
             try
             {
@@ -85,19 +86,22 @@ namespace CodeJar.Infrastructure
                                              DeactivatedBy = @deactivatedBy,
                                              DeactivatedOn = @deactivatedOn,
                                              RedeemedBy = @redeemedBy,
-                                             RedeemedOn = @redeemedOn
+                                             RedeemedOn = @redeemedOn,
+                                             RedemptionID = @redeemId
                                              WHERE ID = @id";
 
                     var deactivatedBy = code is DeactivatingCode ? (object) ((DeactivatingCode)code).By : DBNull.Value;
                     var deactivatedOn = code is DeactivatingCode ? (object) ((DeactivatingCode)code).When : DBNull.Value;
                     var redeemedBy = code is RedeemingCode ? (object) ((RedeemingCode)code).By : DBNull.Value;
                     var redeemedOn = code is RedeemingCode ? (object) ((RedeemingCode)code).When : DBNull.Value;
+                    var redeemId = id;
 
                     command.Parameters.AddWithValue("@state", CodeStateSerializer.SerializeState(code.State));
                     command.Parameters.AddWithValue("@deactivatedBy", deactivatedBy);
                     command.Parameters.AddWithValue("@deactivatedOn", deactivatedOn);
                     command.Parameters.AddWithValue("@redeemedBy", redeemedBy);
                     command.Parameters.AddWithValue("@redeemedOn", redeemedOn);
+                    command.Parameters.AddWithValue("@redeemId", redeemId);
 
                     command.Parameters.AddWithValue("@id", code.Id);
 
