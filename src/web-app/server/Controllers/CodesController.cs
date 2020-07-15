@@ -96,12 +96,16 @@ namespace CodeJar.WebApp.Controllers
             var alphabet = _config.GetSection("Base26")["alphabet"];
             var seedValue = CodeConverter.ConvertFromCode(value, alphabet);
             var code = await _codeRepository.GetRedeemingAsync(seedValue);
-            
-            code.Redeem("user", DateTime.Now);
 
-            await _codeRepository.UpdateAsync(code);
+            if(code.Id != 0)
+            {
+                code.Redeem("user", DateTime.Now);
 
-            return Ok();
+                await _codeRepository.UpdateAsync(code);
+
+                return Ok();
+            }
+            return BadRequest();               
         }
     }
 }
