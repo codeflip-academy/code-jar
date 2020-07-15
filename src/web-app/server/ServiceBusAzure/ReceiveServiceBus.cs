@@ -24,8 +24,6 @@ namespace CodeJar.ServiceBusAzure
     {
         private IQueueClient _queueClient;
         const string QueueName = "codejar";
-        const string ConnectionString = "Endpoint=sb://codefliptodo.servicebus.windows.net/;SharedAccessKeyName=web-app;SharedAccessKey=x9SEbxQ1AlykQv+ygjDh7hlVup1ZAOZkRTrhkuDHgJA=";
-        
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
         private readonly IConfiguration _configuration;
@@ -77,7 +75,7 @@ namespace CodeJar.ServiceBusAzure
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _queueClient = new QueueClient(ConnectionString, QueueName);
+            _queueClient = new QueueClient(_configuration.GetConnectionString("AzureServiceBus"), QueueName);
 
             _logger.LogDebug($"BusListenerService starting; registering message handler.");
 
