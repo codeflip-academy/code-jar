@@ -59,7 +59,7 @@ namespace CodeJar.ServiceBusAzure
                     Id = _idGenerator.NextId()
                 };
 
-                var codes = batch.GenerateCodes(reader);
+                var codes = batch.GenerateCodesAsync(reader);
 
                 await batchRepository.AddAsync(batch);
                 await codeRepository.AddAsync(codes);

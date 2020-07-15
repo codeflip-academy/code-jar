@@ -9,7 +9,7 @@ namespace CodeJar.Domain
     {
         Task UpdateAsync(List<Code> codes);
         Task UpdateAsync(Code code);
-        Task AddAsync(IEnumerable<GeneratedCode> codes);
+        Task AddAsync(IAsyncEnumerable<GeneratedCode> codes);
         Task<RedeemingCode> GetRedeemingAsync(int value);
         Task<DeactivatingCode> GetDeactivatingAsync(int value);
         IAsyncEnumerable<ActivatingCode> GetActivatingAsync(DateTime date);

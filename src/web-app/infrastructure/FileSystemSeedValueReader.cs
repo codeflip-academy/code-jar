@@ -18,10 +18,11 @@ namespace CodeJar.Infrastructure
             _connection = connection;
         }
 
-        public IEnumerable<int> ReadSeedValues(int count)
+        public async Task<List<int>> ReadSeedValuesAsync(int count)
         {
+            var list = new List<int>();
             var offset = new Offset(_connection);
-            var startAndEnd = offset.UpdateOffset(count);
+            var startAndEnd = await offset.UpdateOffsetAsync(count);
             var start = startAndEnd.Item1;
             var end = startAndEnd.Item2;
 
@@ -38,9 +39,11 @@ namespace CodeJar.Infrastructure
                     reader.BaseStream.Position = i;
                     var seedValue = reader.ReadInt32();
 
-                    yield return seedValue;
+                    list.Add(seedValue);
                 }
             }
+
+            return list;
         }
     }
 }

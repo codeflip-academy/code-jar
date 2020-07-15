@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace CodeJar.Domain
 {
@@ -13,9 +14,9 @@ namespace CodeJar.Domain
         public DateTime DateActive {get; set;}
         public DateTime DateExpires {get; set;}
 
-        public IEnumerable<GeneratedCode> GenerateCodes(ISeedValueReader reader)
+        public async IAsyncEnumerable<GeneratedCode> GenerateCodesAsync(ISeedValueReader reader)
         {
-            foreach(var seedValue in reader.ReadSeedValues(BatchSize))
+            foreach(var seedValue in await reader.ReadSeedValuesAsync(BatchSize))
                 yield return new GeneratedCode(Id, seedValue);
         }
     }

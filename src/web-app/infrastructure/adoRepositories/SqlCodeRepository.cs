@@ -16,7 +16,7 @@ namespace CodeJar.Infrastructure
             _connection = connection;
         }
 
-        public async Task AddAsync(IEnumerable<GeneratedCode> codes)
+        public async Task AddAsync(IAsyncEnumerable<GeneratedCode> codes)
         {
             try
             {
@@ -29,7 +29,7 @@ namespace CodeJar.Infrastructure
                     command.Parameters.AddWithValue("@batchID", null);
                     command.Parameters.AddWithValue("@seedValue", null);
 
-                    foreach(var code in codes)
+                    await foreach(var code in codes)
                     {
                         command.Parameters["@batchID"].Value = code.BatchId;
                         command.Parameters["@seedValue"].Value = code.SeedValue;
