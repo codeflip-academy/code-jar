@@ -6,6 +6,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.7" />
     <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
-    <ProjectReference Include="..\domain\domain.csproj" />
+    <ProjectReference Include="..\..\domain\src\domain.csproj" />
   </ItemGroup>
 </Project>

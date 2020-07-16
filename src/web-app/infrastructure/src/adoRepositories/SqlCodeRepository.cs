@@ -73,7 +73,7 @@ namespace CodeJar.Infrastructure
             }
         }
         
-        public async Task UpdateAsync(Code code, Guid? id)
+        public async Task UpdateAsync(Code code)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace CodeJar.Infrastructure
                     var deactivatedOn = code is DeactivatingCode ? (object) ((DeactivatingCode)code).When : DBNull.Value;
                     var redeemedBy = code is RedeemingCode ? (object) ((RedeemingCode)code).By : DBNull.Value;
                     var redeemedOn = code is RedeemingCode ? (object) ((RedeemingCode)code).When : DBNull.Value;
-                    var redeemId = id;
+                    var redeemId = code is RedeemingCode ? (object) ((RedeemingCode)code).RedeemId : DBNull.Value;
 
                     command.Parameters.AddWithValue("@state", CodeStateSerializer.SerializeState(code.State));
                     command.Parameters.AddWithValue("@deactivatedBy", deactivatedBy);

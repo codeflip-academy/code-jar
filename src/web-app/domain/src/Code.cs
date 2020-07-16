@@ -42,12 +42,14 @@ namespace CodeJar.Domain
     {
         public DateTime? When {get; private set;}
         public string By {get; private set;}
+        public Guid RedeemId {get; private set;}
 
         public void Redeem(string by, DateTime when)
         {
             By = by;
             When = when;
             base.State = CodeStates.Redeemed;
+            RedeemId = Guid.NewGuid();
         }
     }
 

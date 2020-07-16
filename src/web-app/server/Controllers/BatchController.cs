@@ -84,7 +84,7 @@ namespace CodeJar.WebApp.Controllers
 
                             var code = new CodeViewModel();
                             code.Id = (int) reader["ID"];
-                            code.StringValue = CodeConverter.ConvertToCode(seedValue, alphabet);
+                            code.StringValue = CodeConverter.ConvertToCode(seedValue, alphabet, _config.GetValue<int>("CodeLength"));
                             code.State = CodeStateSerializer.DeserializeState((byte) reader["State"]);
 
                             codes.Add(code);

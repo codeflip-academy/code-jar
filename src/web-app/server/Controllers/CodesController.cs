@@ -61,7 +61,7 @@ namespace CodeJar.WebApp.Controllers
                             var code = new CodeViewModel();
                             code.Id = (int) reader["ID"];
                             code.State = CodeStateSerializer.DeserializeState((byte) reader["State"]);
-                            code.StringValue = CodeConverter.ConvertToCode(seedValue, alphabet);
+                            code.StringValue = CodeConverter.ConvertToCode(seedValue, alphabet, _config.GetValue<int>("CodeLength"));
                             
                             return Ok(code);
                         }
@@ -91,7 +91,7 @@ namespace CodeJar.WebApp.Controllers
                 var seedValue = CodeConverter.ConvertFromCode(code, alphabet);
                 var codeToDeactivate = await _codeRepository.GetDeactivatingAsync(seedValue);
                 codeToDeactivate.Deactivate("user", now);
-                await _codeRepository.UpdateAsync(codeToDeactivate, null);
+                await _codeRepository.UpdateAsync(codeToDeactivate);
             }
 
             return Ok();
@@ -108,7 +108,7 @@ namespace CodeJar.WebApp.Controllers
             {
                 code.Redeem("user", DateTime.Now);
 
-                await _codeRepository.UpdateAsync(code, _idGenerator.NextId());
+                await _codeRepository.UpdateAsync(code);
 
                 return Ok();
             }
