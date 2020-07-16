@@ -24,14 +24,13 @@ namespace CodeJar.Infrastructure
                 using (var command = _connection.CreateCommand())
                 {
                     command.CommandText = @"
-                    INSERT INTO Batch (ID, BatchName, BatchSize, DateActive, DateExpires, State)
-                    VALUES(@Id, @batchName, @batchSize, @dateActive, @dateExpires, @state)";
+                    INSERT INTO Batch (ID, BatchName, BatchSize, DateActive, DateExpires)
+                    VALUES(@Id, @batchName, @batchSize, @dateActive, @dateExpires)";
 
                     command.Parameters.AddWithValue("@batchName", batch.BatchName);
                     command.Parameters.AddWithValue("@batchSize", batch.BatchSize);
                     command.Parameters.AddWithValue("@dateActive", batch.DateActive);
                     command.Parameters.AddWithValue("@dateExpires", batch.DateExpires);
-                    command.Parameters.AddWithValue("@state", BatchStates.ConvertToByte(batch.State));
                     command.Parameters.AddWithValue("@Id", batch.Id);
 
                     await command.ExecuteNonQueryAsync();
@@ -42,30 +41,6 @@ namespace CodeJar.Infrastructure
             {
                 await _connection.CloseAsync();
             }
-        }
-
-        public async Task DeactivateBatchAsync(Batch batch)
-        {
-            try
-            {
-                await _connection.OpenAsync();
-
-                using (var command = _connection.CreateCommand())
-                {
-                    command.CommandText = @"UPDATE Codes SET [State] = @inactive
-                                            WHERE BatchID = @batchId AND State = 1";
-
-                    command.Parameters.AddWithValue("@inactive", CodeStates.Inactive);
-                    command.Parameters.AddWithValue("@batchId", batch.Id);
-                    await command.ExecuteNonQueryAsync();
-                }                
-            }
-
-            finally
-            {
-                await _connection.CloseAsync();
-            }
-
         }
 
         public async Task<Batch> GetBatchAsync(Guid id)
@@ -90,7 +65,6 @@ namespace CodeJar.Infrastructure
                             batch.BatchSize = (int)reader["BatchSize"];
                             batch.DateActive = (DateTime)reader["DateActive"];
                             batch.DateExpires = (DateTime)reader["DateExpires"];
-                            batch.State = BatchStates.ConvertToString((byte)reader["State"]);
                         }
                     }
                     
@@ -111,14 +85,12 @@ namespace CodeJar.Infrastructure
             {
                 await _connection.OpenAsync();
                 
-                // Create variable to store batches
                 var batches = new List<Batch>();
 
                 using (var command = _connection.CreateCommand())
                 {
                     command.CommandText = @"SELECT * FROM Batch";
 
-                    // Get all the batches
                     using (var reader = await command.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
@@ -130,10 +102,8 @@ namespace CodeJar.Infrastructure
                                 BatchSize = (int)reader["BatchSize"],
                                 DateActive = (DateTime)reader["DateActive"],
                                 DateExpires = (DateTime)reader["DateExpires"],
-                                State = BatchStates.ConvertToString((byte)reader["State"])
                             };
 
-                            // Add each batch to the list of batches
                             batches.Add(batch);
                         }
                     }
@@ -148,32 +118,21 @@ namespace CodeJar.Infrastructure
             }
         }
 
-        public async Task UpdateBatchAsync(Batch batch)
+        public async Task DeactivateBatchAsync(Guid batchId)
         {
             try
             {
                 await _connection.OpenAsync();
-                
-                using(var command = _connection.CreateCommand())
+
+                using (var command = _connection.CreateCommand())
                 {
-                    command.CommandText = @"UPDATE Batch
-                    SET BatchName = @batchName
-                    , BatchSize = @batchSize
-                    , DateActive = @dateActive
-                    , DateExpires = @dateExpires
-                    , State = @state
-                    
-                    WHERE ID = @id";
+                    command.CommandText = @"UPDATE Codes SET [State] = @inactive
+                                            WHERE BatchID = @batchId AND State = 1";
 
-                    command.Parameters.AddWithValue("@batchName", batch.BatchName);
-                    command.Parameters.AddWithValue("@batchSize", batch.BatchSize);
-                    command.Parameters.AddWithValue("@dateActive", batch.DateActive);
-                    command.Parameters.AddWithValue("@dateExpires", batch.DateExpires);
-                    command.Parameters.AddWithValue("@state", BatchStates.ConvertToByte(batch.State));
-                    command.Parameters.AddWithValue("@id", batch.Id);
-
+                    command.Parameters.AddWithValue("@inactive", CodeStates.Inactive);
+                    command.Parameters.AddWithValue("@batchId", batchId);
                     await command.ExecuteNonQueryAsync();
-                }
+                }                
             }
 
             finally

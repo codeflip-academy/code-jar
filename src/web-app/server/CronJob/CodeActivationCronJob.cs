@@ -49,7 +49,7 @@ namespace TodoWebAPI.CronJob
             using (var connection = new SqlConnection(_configuration.GetConnectionString("Storage")))
             {
                 var codeRepository = new SqlCodeRepository(connection); 
-                var generatedCodes = codeRepository.GetCodesForActivationAsync(now);
+                var generatedCodes = codeRepository.GetActivatingAsync(now);
                 var codes = new List<Code>();
 
                 await foreach(var code in generatedCodes)
@@ -58,7 +58,7 @@ namespace TodoWebAPI.CronJob
                     codes.Add(code);
                 }
 
-                await codeRepository.UpdateCodesAsync(codes);
+                await codeRepository.UpdateAsync(codes);
             }
 
             _logger.LogInformation($"{DateTime.Now:hh:mm:ss} Activation job completed.");

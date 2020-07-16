@@ -8,11 +8,14 @@ namespace CodeJar.Domain
 {
     public static class CodeConverter
     {
-        public static string ConvertToCode(int seedvalue, string alphabet)
+        public static string ConvertToCode(int seedvalue, string alphabet, int codeLength)
         {
+            if(alphabet.Length < 2)
+                throw new ArgumentException("Alphabet must be greater than 1.");
+
             var result = EncodeToBaseString(seedvalue, alphabet);
 
-            result = result.PadLeft(6, alphabet[0]);
+            result = result.PadLeft(codeLength, alphabet[0]);
 
             return result;
         }
@@ -21,7 +24,7 @@ namespace CodeJar.Domain
         {
             var result = DecodeFromBaseString(code, alphabet);
 
-            return result;      
+            return result;
         }
 
         private static string EncodeToBaseString(int seedvalue, string alphabet)

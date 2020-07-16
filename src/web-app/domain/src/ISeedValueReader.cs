@@ -6,6 +6,6 @@ namespace CodeJar.Domain
 {
     public interface ISeedValueReader
     {
-        IEnumerable<int> ReadSeedValues(int count);
+        Task<List<int>> ReadSeedValuesAsync(int count);
     }
 }

@@ -338,3 +338,5 @@ node_modules/
 
 # Ignore all .bin files
 *.bin
+
+.DS_Store

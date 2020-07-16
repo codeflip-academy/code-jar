@@ -24,8 +24,6 @@ namespace CodeJar.ServiceBusAzure
     {
         private IQueueClient _queueClient;
         const string QueueName = "codejar";
-        const string ConnectionString = "Endpoint=sb://codefliptodo.servicebus.windows.net/;SharedAccessKeyName=web-app;SharedAccessKey=x9SEbxQ1AlykQv+ygjDh7hlVup1ZAOZkRTrhkuDHgJA=";
-        
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
         private readonly IConfiguration _configuration;
@@ -58,19 +56,13 @@ namespace CodeJar.ServiceBusAzure
                     BatchSize = command.BatchSize,
                     DateActive = command.DateActive,
                     DateExpires = command.DateExpires,
-                    State = BatchStates.Pending,
                     Id = _idGenerator.NextId()
                 };
 
+                var codes = batch.GenerateCodesAsync(reader);
+
                 await batchRepository.AddAsync(batch);
-
-                var codes = batch.GenerateCodes(reader);
-
-                await codeRepository.AddCodesAsync(codes);
-
-                batch.State = BatchStates.Generated;
-
-                await batchRepository.UpdateBatchAsync(batch);
+                await codeRepository.AddAsync(codes);
 
                 _logger.LogInformation($"Batch {batch.Id} with {batch.BatchSize} generated in {watch.ElapsedMilliseconds}ms.");
             }
@@ -83,7 +75,7 @@ namespace CodeJar.ServiceBusAzure
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _queueClient = new QueueClient(ConnectionString, QueueName);
+            _queueClient = new QueueClient(_configuration.GetConnectionString("AzureServiceBus"), QueueName);
 
             _logger.LogDebug($"BusListenerService starting; registering message handler.");
 
@@ -93,7 +85,7 @@ namespace CodeJar.ServiceBusAzure
                 return Task.CompletedTask;
             })
             {
-                MaxConcurrentCalls = 3,
+                MaxConcurrentCalls = 1,
                 AutoComplete = true
             };
             _queueClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);

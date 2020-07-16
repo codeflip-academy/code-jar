@@ -22,22 +22,28 @@ namespace CodeFlip.CodeJar.Api
 
         public Uri FilePath { get; private set; }
 
-        public IEnumerable<int> ReadSeedValues(int count)
+        public async Task<List<int>> ReadSeedValuesAsync(int count)
         {
             var offset = new Offset(_connection);
-            var startAndEnd = offset.UpdateOffset(count);
+            var startAndEnd = await offset.UpdateOffsetAsync(count);
             var start = startAndEnd.Item1;
             var end = startAndEnd.Item2;
             
             var file = new CloudBlockBlob(FilePath);
+            var bytes = new byte[count* sizeof(int)];
 
-            for(var i = start; i < end; i += 4)
+            await file.DownloadRangeToByteArrayAsync(bytes, index: 0, blobOffset: start, length: bytes.Length);
+
+            var list = new List<int>();
+
+            for(var i = 0; i < bytes.Length; i += 4)
             {
-                var bytes = new byte[4];
-                file.DownloadRangeToByteArray(bytes, index: 0, blobOffset: i, length: 4);
-                var seedValue = BitConverter.ToInt32(bytes, 0);
-                yield return seedValue;
+                var seedValue = BitConverter.ToInt32(bytes, i);
+
+                list.Add(seedValue);
             }
+
+            return list;
         }
     }
 }

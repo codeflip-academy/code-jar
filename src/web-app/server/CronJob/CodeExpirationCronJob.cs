@@ -51,13 +51,13 @@ namespace TodoWebAPI.CronJob
 
                 var codes = new List<Code>();
 
-                await foreach(var code in codeRepository.GetCodesForExpirationAsync(now))
+                await foreach(var code in codeRepository.GetExpiringAsync(now))
                 {
                     code.Expire();
                     codes.Add(code);
                 }
 
-                await codeRepository.UpdateCodesAsync(codes);
+                await codeRepository.UpdateAsync(codes);
             }
 
             _logger.LogInformation($"{DateTime.Now:hh:mm:ss} Expiration job completed.");

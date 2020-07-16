@@ -46,7 +46,7 @@ namespace CodeJar.WebApp
 
             services.AddControllers();
 
-            services.AddSingleton<IQueueClient,QueueClient>(_ => new QueueClient("Endpoint=sb://codefliptodo.servicebus.windows.net/;SharedAccessKeyName=web-app;SharedAccessKey=x9SEbxQ1AlykQv+ygjDh7hlVup1ZAOZkRTrhkuDHgJA=", "codejar"));
+            services.AddSingleton<IQueueClient,QueueClient>(_ => new QueueClient(Configuration.GetConnectionString("AzureServiceBus"), "codejar"));
             services.AddSingleton<ISequentialGuidGenerator,SequentialGuidGenerator>();            
             
             services.AddScoped<SqlConnection>(_ => new SqlConnection(Configuration.GetConnectionString("Storage")));

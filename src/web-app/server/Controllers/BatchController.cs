@@ -22,18 +22,20 @@ namespace CodeJar.WebApp.Controllers
     {
         private readonly IQueueClient _queueClient;
         private readonly PaginationCount _pagination;
-        private readonly ILogger<PromoCodesController> _logger;
+        private readonly SqlConnection _connection;
+        private readonly ILogger<CodesController> _logger;
         private readonly IConfiguration _config;
         private readonly IBatchRepository _batchRepository;
         private readonly ICodeRepository _codeRepository;
 
         public BatchController(
-            ILogger<PromoCodesController> logger,
+            ILogger<CodesController> logger,
             IConfiguration config,
             IBatchRepository batchRepository,
             ICodeRepository codeRepository,
             IQueueClient queueClient,
-            PaginationCount paginationCount)
+            PaginationCount paginationCount,
+            SqlConnection connection)
         {
             _logger = logger;
             _config = config;
@@ -41,6 +43,7 @@ namespace CodeJar.WebApp.Controllers
             _codeRepository = codeRepository;
             _queueClient = queueClient;
             _pagination = paginationCount;
+            _connection = connection;
         }
 
         [HttpGet("batch")]
@@ -54,19 +57,56 @@ namespace CodeJar.WebApp.Controllers
         {
             var alphabet = _config.GetSection("Base26")["alphabet"];
             var pageSize = Convert.ToInt32(_config.GetSection("Pagination")["PageNumber"]);
-            var codes = await _codeRepository.GetCodesAsync(id, page, pageSize);
 
-            var vm = codes.Select( c => new CodeViewModel { Id = c.Id, State = c.State.ToString(), StringValue = CodeConverter.ConvertToCode(c.SeedValue, alphabet) });
+            var codes = new List<CodeViewModel>();
+
+            try
+            {
+                await _connection.OpenAsync();
+
+                var p = PageHelper.PaginationPageNumber(page, pageSize);
+
+                using (var command = _connection.CreateCommand())
+                {
+                    command.CommandText = @"SELECT Codes.ID, Codes.SeedValue, Codes.State FROM Codes
+                                            WHERE Codes.BatchId = @batchID
+                                            ORDER BY ID OFFSET @page ROWS FETCH NEXT @pageSize ROWS ONLY";
+
+                    command.Parameters.AddWithValue("@page", p);
+                    command.Parameters.AddWithValue("@pageSize", pageSize);
+                    command.Parameters.AddWithValue("@batchID", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var seedValue = (int) reader["SeedValue"];
+
+                            var code = new CodeViewModel();
+                            code.Id = (int) reader["ID"];
+                            code.StringValue = CodeConverter.ConvertToCode(seedValue, alphabet, _config.GetValue<int>("CodeLength"));
+                            code.State = CodeStateSerializer.DeserializeState((byte) reader["State"]);
+
+                            codes.Add(code);
+                        }
+                    }
+                }
+            }
+
+            finally
+            {
+                await _connection.CloseAsync();
+            }
 
             var pages = await _pagination.PageCount(id);
 
-            return Ok(new CodesViewModel(vm.ToList(), pages));
+            return Ok(new CodesViewModel(codes, pages));
         }
 
         [HttpDelete("batch")]
         public async Task<IActionResult> DeactivateBatch([FromBody] Batch batch)
         {
-            await _batchRepository.DeactivateBatchAsync(batch);
+            await _batchRepository.DeactivateBatchAsync(batch.Id);
             return Ok();
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace CodeJar.Infrastructure
 {
@@ -11,7 +12,7 @@ namespace CodeJar.Infrastructure
         {
             _connection = connection;
         }
-        public (long, long) UpdateOffset(int count)
+        public async Task<(long, long)> UpdateOffsetAsync(int count)
         {
             long start;
             long end;
@@ -25,7 +26,7 @@ namespace CodeJar.Infrastructure
 
                 command.Parameters.AddWithValue("@offsetIncrement", count * 4);
                 
-                end = (long)command.ExecuteScalar();
+                end = (long)(await command.ExecuteScalarAsync());
 
                 start = end - count * 4;
 
