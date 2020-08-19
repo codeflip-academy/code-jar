@@ -80,12 +80,12 @@ namespace CodeJar.WebApp.Controllers
                     {
                         while (await reader.ReadAsync())
                         {
-                            var seedValue = (int) reader["SeedValue"];
+                            var seedValue = (int)reader["SeedValue"];
 
                             var code = new CodeViewModel();
-                            code.Id = (int) reader["ID"];
+                            code.Id = (int)reader["ID"];
                             code.StringValue = CodeConverter.ConvertToCode(seedValue, alphabet, _config.GetValue<int>("CodeLength"));
-                            code.State = CodeStateSerializer.DeserializeState((byte) reader["State"]);
+                            code.State = CodeStateSerializer.DeserializeState((byte)reader["State"]);
 
                             codes.Add(code);
                         }
@@ -117,7 +117,7 @@ namespace CodeJar.WebApp.Controllers
             var message = new Message(Encoding.UTF8.GetBytes(messageBody));
 
             await _queueClient.SendAsync(message);
-            
+
             return Ok(request);
         }
     }

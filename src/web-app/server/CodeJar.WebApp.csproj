@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>2b5f934e-cc1a-4e7c-8e2b-b223ee4bde37</UserSecretsId>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Cronos" Version="0.7.0" />
