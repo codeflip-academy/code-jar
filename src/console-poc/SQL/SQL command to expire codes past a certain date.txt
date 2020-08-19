@@ -1,1 +1,0 @@
-UPDATE [6 digit code] SET [State] = 'Expired'  WHERE DateExpires <= GetDate();
