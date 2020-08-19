@@ -30,5 +30,9 @@ namespace CodeJar.Nugget
             );
             return response;
         }
+        public async Task<HttpResponseMessage> GetBatchAsync(Guid id, int page)
+        {
+            return await Client.GetAsync(requestUri: $"http://localhost:5000/batch/{id}?page={page}");
+        }
     }
 }
