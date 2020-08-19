@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TodoWebAPI.CronJob
+namespace CodeJar.CronJob
 {
     public class CodeActivationCronJob : CronJobService
     {
@@ -33,7 +33,7 @@ namespace TodoWebAPI.CronJob
             return base.StartAsync(cancellationToken);
         }
 
-       
+
         public override Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Due Date Job is Stopping");
@@ -48,11 +48,11 @@ namespace TodoWebAPI.CronJob
 
             using (var connection = new SqlConnection(_configuration.GetConnectionString("Storage")))
             {
-                var codeRepository = new SqlCodeRepository(connection); 
+                var codeRepository = new SqlCodeRepository(connection);
                 var generatedCodes = codeRepository.GetActivatingAsync(now);
                 var codes = new List<Code>();
 
-                await foreach(var code in generatedCodes)
+                await foreach (var code in generatedCodes)
                 {
                     code.Activate();
                     codes.Add(code);

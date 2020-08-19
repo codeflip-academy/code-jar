@@ -1,8 +1,9 @@
-C:\Users\Parker\Documents\CodeFlip\code-jar\src\code-jar-client\obj\Debug\netstandard2.0\code-jar-client.csprojAssemblyReference.cache
-C:\Users\Parker\Documents\CodeFlip\code-jar\src\code-jar-client\obj\Debug\netstandard2.0\code-jar-client.AssemblyInfoInputs.cache
-C:\Users\Parker\Documents\CodeFlip\code-jar\src\code-jar-client\obj\Debug\netstandard2.0\code-jar-client.AssemblyInfo.cs
-C:\Users\Parker\Documents\CodeFlip\code-jar\src\code-jar-client\bin\Debug\netstandard2.0\code-jar-client.deps.json
-C:\Users\Parker\Documents\CodeFlip\code-jar\src\code-jar-client\bin\Debug\netstandard2.0\code-jar-client.dll
-C:\Users\Parker\Documents\CodeFlip\code-jar\src\code-jar-client\bin\Debug\netstandard2.0\code-jar-client.pdb
-C:\Users\Parker\Documents\CodeFlip\code-jar\src\code-jar-client\obj\Debug\netstandard2.0\code-jar-client.dll
-C:\Users\Parker\Documents\CodeFlip\code-jar\src\code-jar-client\obj\Debug\netstandard2.0\code-jar-client.pdb
+/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/bin/Debug/netstandard2.0/code-jar-client.deps.json
+/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/bin/Debug/netstandard2.0/code-jar-client.dll
+/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/bin/Debug/netstandard2.0/code-jar-client.pdb
+/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/obj/Debug/netstandard2.0/code-jar-client.csprojAssemblyReference.cache
+/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/obj/Debug/netstandard2.0/code-jar-client.AssemblyInfoInputs.cache
+/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/obj/Debug/netstandard2.0/code-jar-client.AssemblyInfo.cs
+/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/obj/Debug/netstandard2.0/code-jar-client.csproj.CoreCompileInputs.cache
+/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/obj/Debug/netstandard2.0/code-jar-client.dll
+/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/obj/Debug/netstandard2.0/code-jar-client.pdb

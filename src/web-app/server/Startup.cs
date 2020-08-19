@@ -16,7 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TodoWebAPI.CronJob;
+using CodeJar.CronJob;
 
 namespace CodeJar.WebApp
 {
@@ -46,9 +46,9 @@ namespace CodeJar.WebApp
 
             services.AddControllers();
 
-            services.AddSingleton<IQueueClient,QueueClient>(_ => new QueueClient(Configuration.GetConnectionString("AzureServiceBus"), "codejar"));
-            services.AddSingleton<ISequentialGuidGenerator,SequentialGuidGenerator>();            
-            
+            services.AddSingleton<IQueueClient, QueueClient>(_ => new QueueClient(Configuration.GetConnectionString("AzureServiceBus"), "codejar"));
+            services.AddSingleton<ISequentialGuidGenerator, SequentialGuidGenerator>();
+
             services.AddScoped<SqlConnection>(_ => new SqlConnection(Configuration.GetConnectionString("Storage")));
             services.AddScoped<IBatchRepository, SqlBatchRepository>();
             services.AddScoped<ICodeRepository, SqlCodeRepository>();

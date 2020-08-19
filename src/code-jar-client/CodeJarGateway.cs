@@ -7,11 +7,11 @@ using System.Text.Json.Serialization;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 
-namespace CodeJar.Nugget
+namespace CodeJar.Gateway
 {
-    public class RedeemCode
+    public class CodeJarGateway
     {
-        public HttpClient Client = new HttpClient();
+        private HttpClient Client = new HttpClient();
         private JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
@@ -29,10 +29,6 @@ namespace CodeJar.Nugget
                     )
             );
             return response;
-        }
-        public async Task<HttpResponseMessage> GetBatchAsync(Guid id, int page)
-        {
-            return await Client.GetAsync(requestUri: $"http://localhost:5000/batch/{id}?page={page}");
         }
     }
 }
