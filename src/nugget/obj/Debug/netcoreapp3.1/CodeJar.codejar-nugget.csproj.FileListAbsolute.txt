@@ -1,0 +1,4 @@
+C:\Users\Parker\Documents\CodeFlip\code-jar\codejar-nugget\obj\Debug\netcoreapp3.1\CodeJar.codejar-nugget.csprojAssemblyReference.cache
+C:\Users\Parker\Documents\CodeFlip\code-jar\codejar-nugget\obj\Debug\netcoreapp3.1\CodeJar.codejar-nugget.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Parker\Documents\CodeFlip\code-jar\codejar-nugget\obj\Debug\netcoreapp3.1\CodeJar.codejar-nugget.AssemblyInfoInputs.cache
+C:\Users\Parker\Documents\CodeFlip\code-jar\codejar-nugget\obj\Debug\netcoreapp3.1\CodeJar.codejar-nugget.AssemblyInfo.cs

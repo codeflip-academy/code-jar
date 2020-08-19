@@ -1,0 +1,8 @@
+C:\Users\Parker\Documents\CodeFlip\code-jar\src\nugget\bin\Debug\netstandard2.0\Nugget.deps.json
+C:\Users\Parker\Documents\CodeFlip\code-jar\src\nugget\bin\Debug\netstandard2.0\Nugget.dll
+C:\Users\Parker\Documents\CodeFlip\code-jar\src\nugget\bin\Debug\netstandard2.0\Nugget.pdb
+C:\Users\Parker\Documents\CodeFlip\code-jar\src\nugget\obj\Debug\netstandard2.0\Nugget.csprojAssemblyReference.cache
+C:\Users\Parker\Documents\CodeFlip\code-jar\src\nugget\obj\Debug\netstandard2.0\Nugget.AssemblyInfoInputs.cache
+C:\Users\Parker\Documents\CodeFlip\code-jar\src\nugget\obj\Debug\netstandard2.0\Nugget.AssemblyInfo.cs
+C:\Users\Parker\Documents\CodeFlip\code-jar\src\nugget\obj\Debug\netstandard2.0\Nugget.dll
+C:\Users\Parker\Documents\CodeFlip\code-jar\src\nugget\obj\Debug\netstandard2.0\Nugget.pdb
