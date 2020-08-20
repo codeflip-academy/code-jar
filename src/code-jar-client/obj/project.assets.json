@@ -1060,6 +1060,7 @@
       "path": "microsoft.netcore.targets/1.1.0",
       "files": [
         ".nupkg.metadata",
+        ".signature.p7s",
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
         "lib/netstandard1.0/_._",
@@ -1350,7 +1351,6 @@
       "path": "runtime.native.system.net.http/4.3.0",
       "files": [
         ".nupkg.metadata",
-        ".signature.p7s",
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
         "lib/netstandard1.0/_._",
@@ -3769,30 +3769,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Parker\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "/Users/trentonhicks/.nuget/packages/": {},
+    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Parker\\Documents\\CodeFlip\\code-jar\\src\\code-jar-client\\code-jar-client.csproj",
+      "projectUniqueName": "/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/code-jar-client.csproj",
       "projectName": "code-jar-client",
-      "projectPath": "C:\\Users\\Parker\\Documents\\CodeFlip\\code-jar\\src\\code-jar-client\\code-jar-client.csproj",
-      "packagesPath": "C:\\Users\\Parker\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Parker\\Documents\\CodeFlip\\code-jar\\src\\code-jar-client\\obj\\",
+      "projectPath": "/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/code-jar-client.csproj",
+      "packagesPath": "/Users/trentonhicks/.nuget/packages/",
+      "outputPath": "/Users/trentonhicks/Library/Mobile Documents/com~apple~CloudDocs/Projects/School/code-jar/src/code-jar-client/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Parker\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/trentonhicks/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netstandard2.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3842,7 +3840,7 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.102\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.300/RuntimeIdentifierGraph.json"
       }
     }
   }

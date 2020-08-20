@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TodoWebAPI.CronJob
+namespace CodeJar.CronJob
 {
     public class CodeExpirationCronJob : CronJobService
     {
@@ -45,13 +45,13 @@ namespace TodoWebAPI.CronJob
 
             var now = DateTime.Now;
 
-            using(var connection = new SqlConnection(_configuration.GetConnectionString("Storage")))
+            using (var connection = new SqlConnection(_configuration.GetConnectionString("Storage")))
             {
                 var codeRepository = new SqlCodeRepository(connection);
 
                 var codes = new List<Code>();
 
-                await foreach(var code in codeRepository.GetExpiringAsync(now))
+                await foreach (var code in codeRepository.GetExpiringAsync(now))
                 {
                     code.Expire();
                     codes.Add(code);

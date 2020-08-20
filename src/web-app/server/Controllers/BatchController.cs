@@ -111,14 +111,21 @@ namespace CodeJar.WebApp.Controllers
         }
 
         [HttpPost("batch")]
-        public async Task<IActionResult> Post(CreateBatchCommand request)
+        public async Task<IActionResult> Post([FromBody] CreateBatchCommand request)
         {
-            string messageBody = JsonConvert.SerializeObject(request);
-            var message = new Message(Encoding.UTF8.GetBytes(messageBody));
+            var today = DateTime.Now;
 
-            await _queueClient.SendAsync(message);
+            if (request.DateActive.Date < request.DateExpires.Date && request.DateActive.Date >= today.Date)
+            {
+                string messageBody = JsonConvert.SerializeObject(request);
+                var message = new Message(Encoding.UTF8.GetBytes(messageBody));
 
-            return Ok(request);
+                await _queueClient.SendAsync(message);
+
+                return Ok(request);
+            }
+
+            return BadRequest();
         }
     }
 }
