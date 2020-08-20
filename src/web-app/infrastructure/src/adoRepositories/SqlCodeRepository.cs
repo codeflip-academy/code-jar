@@ -23,14 +23,14 @@ namespace CodeJar.Infrastructure
             {
                 await _connection.OpenAsync();
 
-                using(var command = _connection.CreateCommand())
+                using (var command = _connection.CreateCommand())
                 {
                     command.CommandText = $@"INSERT INTO Codes (BatchID, SeedValue, State) VALUES (@batchID, @seedValue, 0)";
 
                     command.Parameters.AddWithValue("@batchID", null);
                     command.Parameters.AddWithValue("@seedValue", null);
 
-                    await foreach(var code in codes)
+                    await foreach (var code in codes)
                     {
                         command.Parameters["@batchID"].Value = code.BatchId;
                         command.Parameters["@seedValue"].Value = code.SeedValue;
@@ -39,22 +39,22 @@ namespace CodeJar.Infrastructure
                     }
                 }
             }
-            
+
             finally
             {
                 await _connection.CloseAsync();
             }
         }
-        
+
         public async Task UpdateAsync(List<Code> codes)
         {
             try
             {
                 await _connection.OpenAsync();
-                
-                using(var command = _connection.CreateCommand())
+
+                using (var command = _connection.CreateCommand())
                 {
-                    foreach(var code in codes)
+                    foreach (var code in codes)
                     {
                         command.Parameters.Clear();
                         command.CommandText = $@"UPDATE Codes SET State = @state WHERE ID = @id";
@@ -72,14 +72,14 @@ namespace CodeJar.Infrastructure
                 await _connection.CloseAsync();
             }
         }
-        
+
         public async Task UpdateAsync(Code code)
         {
             try
             {
                 await _connection.OpenAsync();
-                
-                using(var command = _connection.CreateCommand())
+
+                using (var command = _connection.CreateCommand())
                 {
                     command.CommandText = $@"UPDATE Codes
                                              SET State = @state,
@@ -90,11 +90,11 @@ namespace CodeJar.Infrastructure
                                              RedemptionID = @redeemId
                                              WHERE ID = @id";
 
-                    var deactivatedBy = code is DeactivatingCode ? (object) ((DeactivatingCode)code).By : DBNull.Value;
-                    var deactivatedOn = code is DeactivatingCode ? (object) ((DeactivatingCode)code).When : DBNull.Value;
-                    var redeemedBy = code is RedeemingCode ? (object) ((RedeemingCode)code).By : DBNull.Value;
-                    var redeemedOn = code is RedeemingCode ? (object) ((RedeemingCode)code).When : DBNull.Value;
-                    var redeemId = code is RedeemingCode ? (object) ((RedeemingCode)code).RedeemId : DBNull.Value;
+                    var deactivatedBy = code is DeactivatingCode ? (object)((DeactivatingCode)code).By : DBNull.Value;
+                    var deactivatedOn = code is DeactivatingCode ? (object)((DeactivatingCode)code).When : DBNull.Value;
+                    var redeemedBy = code is RedeemingCode ? (object)((RedeemingCode)code).By : DBNull.Value;
+                    var redeemedOn = code is RedeemingCode ? (object)((RedeemingCode)code).When : DBNull.Value;
+                    var redeemId = code is RedeemingCode ? (object)((RedeemingCode)code).RedeemId : DBNull.Value;
 
                     command.Parameters.AddWithValue("@state", CodeStateSerializer.SerializeState(code.State));
                     command.Parameters.AddWithValue("@deactivatedBy", deactivatedBy);
@@ -120,10 +120,10 @@ namespace CodeJar.Infrastructure
             try
             {
                 await _connection.OpenAsync();
-                
+
                 using (var command = _connection.CreateCommand())
                 {
-                    command.CommandText = @"SELECT Codes.ID, Codes.State FROM Codes
+                    command.CommandText = @"SELECT Codes.ID, Codes.State, Codes.BatchID FROM Codes
                                             WHERE Codes.SeedValue = @seedValue AND Codes.State = 1";
 
                     command.Parameters.AddWithValue("@seedValue", value);
@@ -134,12 +134,13 @@ namespace CodeJar.Infrastructure
                         {
                             var code = new RedeemingCode
                             {
-                                Id = (int) reader["ID"]
+                                Id = (int)reader["ID"],
+                                BatchId = (Guid)reader["BatchID"]
                             };
 
                             code.GetType()
                             .GetProperty(nameof(code.State))
-                            .SetValue(code, CodeStateSerializer.DeserializeState((byte) reader["State"]));
+                            .SetValue(code, CodeStateSerializer.DeserializeState((byte)reader["State"]));
 
                             return code;
                         }
@@ -173,12 +174,12 @@ namespace CodeJar.Infrastructure
                         {
                             var code = new DeactivatingCode
                             {
-                                Id = (int) reader["Id"]
+                                Id = (int)reader["Id"]
                             };
 
                             code.GetType()
                             .GetProperty(nameof(code.State))
-                            .SetValue(code, CodeStateSerializer.DeserializeState((byte) reader["State"]));
+                            .SetValue(code, CodeStateSerializer.DeserializeState((byte)reader["State"]));
 
                             return code;
                         }
@@ -200,7 +201,7 @@ namespace CodeJar.Infrastructure
             {
                 await _connection.OpenAsync();
 
-                using(var command = _connection.CreateCommand())
+                using (var command = _connection.CreateCommand())
                 {
                     command.CommandText = @"SELECT Codes.ID, Codes.State FROM Codes
                                             INNER JOIN Batch ON Batch.ID = Codes.BatchID
@@ -208,16 +209,16 @@ namespace CodeJar.Infrastructure
 
                     command.Parameters.AddWithValue("@date", date);
 
-                    using(var reader = await command.ExecuteReaderAsync())
+                    using (var reader = await command.ExecuteReaderAsync())
                     {
-                        while(await reader.ReadAsync())
+                        while (await reader.ReadAsync())
                         {
                             var code = new ActivatingCode();
-                            code.Id = (int) reader["ID"];
+                            code.Id = (int)reader["ID"];
 
                             code.GetType()
                             .GetProperty(nameof(code.State))
-                            .SetValue(code, CodeStateSerializer.DeserializeState((byte) reader["State"]));
+                            .SetValue(code, CodeStateSerializer.DeserializeState((byte)reader["State"]));
 
                             yield return code;
                         }
@@ -238,7 +239,7 @@ namespace CodeJar.Infrastructure
             {
                 await _connection.OpenAsync();
 
-                using(var command = _connection.CreateCommand())
+                using (var command = _connection.CreateCommand())
                 {
                     command.CommandText = @"SELECT Codes.ID, Codes.State FROM Codes
                                             INNER JOIN Batch ON Batch.ID = Codes.BatchID
@@ -246,15 +247,15 @@ namespace CodeJar.Infrastructure
 
                     command.Parameters.AddWithValue("@forDate", date.Date);
 
-                    using(var reader = await command.ExecuteReaderAsync())
+                    using (var reader = await command.ExecuteReaderAsync())
                     {
-                        while(await reader.ReadAsync())
+                        while (await reader.ReadAsync())
                         {
                             var code = new ExpiringCode();
-                            code.Id = (int) reader["ID"];
+                            code.Id = (int)reader["ID"];
                             code.GetType()
                             .GetProperty(nameof(code.State))
-                            .SetValue(code, CodeStateSerializer.DeserializeState((byte) reader["State"]));
+                            .SetValue(code, CodeStateSerializer.DeserializeState((byte)reader["State"]));
 
                             yield return code;
                         }

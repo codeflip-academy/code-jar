@@ -21,18 +21,22 @@ namespace CodeJar.WebApp.Controllers
         private readonly ILogger<CodesController> _logger;
         private readonly IConfiguration _config;
         private readonly ICodeRepository _codeRepository;
+        private readonly IBatchRepository _batchRepository;
         private readonly SqlConnection _connection;
         private readonly ISequentialGuidGenerator _idGenerator;
 
-        public CodesController(ILogger<CodesController> logger,
-         IConfiguration config,
-          ICodeRepository codeRepository,
-           SqlConnection connection,
-           ISequentialGuidGenerator idGenerator)
+        public CodesController(
+            ILogger<CodesController> logger,
+            IConfiguration config,
+            ICodeRepository codeRepository,
+            IBatchRepository batchRepository,
+            SqlConnection connection,
+            ISequentialGuidGenerator idGenerator)
         {
             _logger = logger;
             _config = config;
             _codeRepository = codeRepository;
+            _batchRepository = batchRepository;
             _connection = connection;
             _idGenerator = idGenerator;
         }
@@ -47,22 +51,22 @@ namespace CodeJar.WebApp.Controllers
             {
                 await _connection.OpenAsync();
 
-                using(var command = _connection.CreateCommand())
+                using (var command = _connection.CreateCommand())
                 {
                     command.CommandText = @"SELECT Codes.ID, Codes.State FROM Codes
                                             WHERE Codes.SeedValue = @seedValue";
 
                     command.Parameters.AddWithValue("@seedValue", seedValue);
 
-                    using(var reader = await command.ExecuteReaderAsync())
+                    using (var reader = await command.ExecuteReaderAsync())
                     {
-                        if(await reader.ReadAsync())
+                        if (await reader.ReadAsync())
                         {
                             var code = new CodeViewModel();
-                            code.Id = (int) reader["ID"];
-                            code.State = CodeStateSerializer.DeserializeState((byte) reader["State"]);
+                            code.Id = (int)reader["ID"];
+                            code.State = CodeStateSerializer.DeserializeState((byte)reader["State"]);
                             code.StringValue = CodeConverter.ConvertToCode(seedValue, alphabet, _config.GetValue<int>("CodeLength"));
-                            
+
                             return Ok(code);
                         }
 
@@ -73,7 +77,7 @@ namespace CodeJar.WebApp.Controllers
                     }
                 }
             }
-            
+
             finally
             {
                 await _connection.CloseAsync();
@@ -81,12 +85,12 @@ namespace CodeJar.WebApp.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Deactivate([FromBody]string[] codes)
+        public async Task<IActionResult> Deactivate([FromBody] string[] codes)
         {
             var alphabet = _config.GetSection("Base26")["alphabet"];
             var now = DateTime.Now;
 
-            foreach(var code in codes)
+            foreach (var code in codes)
             {
                 var seedValue = CodeConverter.ConvertFromCode(code, alphabet);
                 var codeToDeactivate = await _codeRepository.GetDeactivatingAsync(seedValue);
@@ -103,16 +107,17 @@ namespace CodeJar.WebApp.Controllers
             var alphabet = _config.GetSection("Base26")["alphabet"];
             var seedValue = CodeConverter.ConvertFromCode(value, alphabet);
             var code = await _codeRepository.GetRedeemingAsync(seedValue);
+            var batch = await _batchRepository.GetBatchAsync(code.BatchId);
 
-            if(code.Id != 0)
+            if (code.Id != 0)
             {
                 code.Redeem("user", DateTime.Now);
 
                 await _codeRepository.UpdateAsync(code);
 
-                return Ok();
+                return Ok(batch.PromotionType);
             }
-            return BadRequest();               
+            return BadRequest();
         }
     }
 }

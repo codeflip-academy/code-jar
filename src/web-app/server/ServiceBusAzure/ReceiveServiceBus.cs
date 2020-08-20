@@ -22,8 +22,8 @@ namespace CodeJar.ServiceBusAzure
 {
     public class ReceiveServiceBus : IHostedService
     {
-        private IQueueClient _queueClient;
         const string QueueName = "codejar";
+        private IQueueClient _queueClient;
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
         private readonly IConfiguration _configuration;
@@ -47,13 +47,14 @@ namespace CodeJar.ServiceBusAzure
                 var codeRepository = new SqlCodeRepository(connection);
 
                 var command = JsonConvert.DeserializeObject<CreateBatchCommand>(Encoding.UTF8.GetString(message.Body));
-            
+
                 var reader = new CloudReader(_configuration.GetSection("File")["SeedBlobUrl"], connection);
 
                 var batch = new Batch
                 {
                     BatchName = command.BatchName,
                     BatchSize = command.BatchSize,
+                    PromotionType = command.PromotionType,
                     DateActive = command.DateActive,
                     DateExpires = command.DateExpires,
                     Id = _idGenerator.NextId()

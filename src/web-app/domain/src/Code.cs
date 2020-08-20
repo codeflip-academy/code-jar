@@ -7,9 +7,10 @@ namespace CodeJar.Domain
 {
     public abstract class Code
     {
-        public int Id {get; set;}
+        public int Id { get; set; }
         public string State { get; protected set; }
         public Guid RedemptionID { get; set; }
+        public Guid BatchId { get; set; }
     }
 
     public class GeneratedCode : Code
@@ -21,14 +22,14 @@ namespace CodeJar.Domain
             State = CodeStates.Generated;
         }
 
-        public Guid BatchId {get; set;}
-        public int SeedValue {get; set;}
+        public Guid BatchId { get; set; }
+        public int SeedValue { get; set; }
     }
 
     public class DeactivatingCode : Code
     {
-        public DateTime? When {get; private set;}
-        public string By {get; private set;}
+        public DateTime? When { get; private set; }
+        public string By { get; private set; }
 
         public void Deactivate(string by, DateTime when)
         {
@@ -40,10 +41,9 @@ namespace CodeJar.Domain
 
     public class RedeemingCode : Code
     {
-        public DateTime? When {get; private set;}
-        public string By {get; private set;}
-        public Guid RedeemId {get; private set;}
-
+        public DateTime? When { get; private set; }
+        public string By { get; private set; }
+        public Guid RedeemId { get; private set; }
         public void Redeem(string by, DateTime when)
         {
             By = by;
