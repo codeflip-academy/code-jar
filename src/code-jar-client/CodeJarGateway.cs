@@ -3,9 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Data.SqlClient;
-using System.Collections.Generic;
+using CodeJar.Response;
 
 namespace CodeJar.Gateway
 {
@@ -16,19 +14,26 @@ namespace CodeJar.Gateway
         {
             PropertyNameCaseInsensitive = true,
         };
-        public async Task<HttpResponseMessage> RedeemCodeAsync(string codeStringValue)
+        public async Task<RedeemCodeResponse> RedeemCodeAsync(string codeStringValue)
         {
             var content = JsonSerializer.Serialize(codeStringValue, _jsonOptions);
+
             var response = await Client.PostAsync(
                 requestUri: "http://localhost:5000/redeem-code",
-                content:
-                    new StringContent(
-                        content: content,
-                        encoding: Encoding.UTF8,
-                        mediaType: "application/json"
-                    )
+                content: new StringContent(
+                    content: content,
+                    encoding: Encoding.UTF8,
+                    mediaType: "application/json"
+                )
             );
-            return response;
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var redeemCodeResponse = new RedeemCodeResponse();
+            redeemCodeResponse.SetSuccessStatus(response.IsSuccessStatusCode);
+            redeemCodeResponse.SetPromotionType(responseContent);
+
+            return redeemCodeResponse;
         }
     }
 }
